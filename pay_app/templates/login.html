@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register | CIT Coin Pay</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@tabler/icons@latest/iconfont/tabler-icons.min.css"
+    />
+    <!-- add css from static folder with flask -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/tabler.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/app.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/tabler-vendors.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/app.css') }}"
+    />
+  </head>
+  <body class="border-top-wide border-primary d-flex flex-column">
+    <div class="page page-center">
+      <div class="container-tight py-4">
+        <div class="text-center mb-4">
+          <a href="." class="navbar-brand navbar-brand-autodark"
+            ><img src="https://citinstitute.tech/wp-content/uploads/2019/12/New-CODEIT-LOGO-TRANSPARENT-1.png" height="36" alt=""
+          /></a>
+        </div>
+        <form class="card card-md" method="post" autocomplete="off">
+          <div class="card-body">
+            <h2 class="card-title text-center mb-4">Sign into your account</h2>
+            {% if err_msg %}
+            <div class="alert alert-danger" role="alert">
+              {{ err_msg }}
+            </div>
+            {% endif %}
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <input
+                type="text"
+                name="username"
+                class="form-control"
+                placeholder="Enter your username"
+              />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">
+                Password
+                <span class="form-label-description">
+                  <a href="/reset_password">I forgot password</a>
+                </span>
+              </label>
+              <div class="input-group input-group-flat">
+                <input
+                  type="password"
+                  name="password"
+                  class="form-control"
+                  placeholder="Password"
+                  autocomplete="off"
+                />
+                <span class="input-group-text">
+                  <a
+                    href="#"
+                    class="link-secondary"
+                    title="Show password"
+                    data-bs-toggle="tooltip"
+                  >
+                    <i class="ti ti-eye-off"></i>
+                  </a>
+                </span>
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-check">
+                <input type="checkbox" class="form-check-input" />
+                <span class="form-check-label">Remember me on this device</span>
+              </label>
+            </div>
+            <div class="form-footer">
+              <button type="submit" class="btn btn-primary w-100">
+                Sign in
+              </button>
+            </div>
+          </div>
+          <div class="hr-text">or</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col">
+                <a href="#" class="btn btn-white w-100">
+                  <i class="ti ti-brand-github icon text-github"></i>
+                  Login with Github
+                </a>
+              </div>
+              <div class="col">
+                <a href="#" class="btn btn-white w-100">
+                  <i class="ti ti-brand-twitter icon text-twitter"></i>
+                  Login with Twitter
+                </a>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="text-center text-muted mt-3">
+          Don't have an account yet?
+          <a href="/register" tabindex="-1">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

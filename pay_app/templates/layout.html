@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | CIT Coin Pay</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@tabler/icons@latest/iconfont/tabler-icons.min.css"
+    />
+    <!-- add css from static folder with flask -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/tabler.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/app.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/tabler-vendors.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/app.css') }}"
+    />
+</head>
+<body class="theme-light">
+    <div class="page">
+        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <h1 class="navbar-brand navbar-brand-autodark">
+                <a href=".">
+                  <img src="https://citinstitute.tech/wp-content/uploads/2019/12/New-CODEIT-LOGO-TRANSPARENT-1.png" width="110" height="32" alt="Tabler" class="navbar-brand-image">
+                </a>
+              </h1>
+              <div class="navbar-nav flex-row d-lg-none">
+                <div class="nav-item d-none d-md-flex me-3">
+                </div>
+                <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Enable dark mode">
+                  <i class="ti ti-moon"></i>
+                </a>
+                <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Enable light mode">
+                  <i class="ti ti-sun"></i>
+                </a>
+                <div class="nav-item dropdown d-none d-md-flex me-3">
+                  <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show notifications">
+                    <i class="ti ti-bell"></i>
+                    <span class="badge bg-red"></span>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-end dropdown-menu-card">
+                    <div class="card">
+                      <div class="card-body">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ad amet consectetur exercitationem fugiat in ipsa ipsum, natus odio quidem quod repudiandae sapiente. Amet debitis et magni maxime necessitatibus ullam.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="nav-item dropdown">
+                  <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                    <span class="avatar avatar-sm" style="background-image: url(./static/avatars/000m.jpg)"></span>
+                    <div class="d-none d-xl-block ps-2">
+                      <div>Admin</div>
+                      <div class="mt-1 small text-muted">UI Designer</div>
+                    </div>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <a href="#" class="dropdown-item">Set status</a>
+                    <a href="#" class="dropdown-item">Profile &amp; account</a>
+                    <a href="#" class="dropdown-item">Feedback</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item">Settings</a>
+                    <a href="/logout" class="dropdown-item">Logout</a>
+                  </div>
+                </div>
+              </div>
+              <div class="collapse navbar-collapse" id="navbar-menu">
+                <ul class="navbar-nav pt-lg-3">
+                  <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                        <i class="ti ti-home icon"></i>   
+                      </span>
+                      <span class="nav-link-title">
+                        Home
+                      </span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/wallet">
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                        <i class="ti ti-wallet icon"></i>
+                      </span>
+                      <span class="nav-link-title">
+                        Wallet
+                      </span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </aside>
+    
