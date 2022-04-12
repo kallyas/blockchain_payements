@@ -1,4 +1,4 @@
-from time import time
+from datetime import datetime
 from urllib.parse import urlparse
 from uuid import uuid4
 import requests
@@ -21,7 +21,7 @@ class Blockchain:
         the chain. The block has index 0, previous_hash as 0, and
         a valid hash.
         """
-        genesis_block = Block(0, [], time.time(), "0")
+        genesis_block = Block(0, {}, datetime.now(), "0")
         genesis_block.hash = genesis_block.compute_hash()
         self.chain.append(genesis_block)
 
@@ -42,25 +42,12 @@ class Blockchain:
         else:
             raise ValueError('Invalid URL')
 
-    def add_block(self, block, proof, blockchain):
-        """
-        A function that adds the block to the chain after verification.
-        Verification includes:
-        * Checking if the proof is valid.
-        * The previous_hash referred in the block and the hash of latest block
-          in the chain match.
-        """
-        previous_hash = self.last_block.hash
+    def add_block(self, block):
+        if block.previous_hash == self.last_block.hash:
+            self.chain.append(block)
+            return True
+        return False
 
-        if previous_hash != block.previous_hash:
-            return False
-
-        if not blockchain.is_valid_proof(block, proof):
-            return False
-
-        block.hash = proof
-        self.chain.append(block)
-        return True
 
     @staticmethod
     def proof_of_work(block):
@@ -75,7 +62,7 @@ class Blockchain:
             block.nonce += 1
             computed_hash = block.compute_hash()
 
-        return computed_hash
+        return computed_hash, block.nonce
 
     def add_new_transaction(self, transaction):
         self.transactions.append(transaction)
@@ -139,3 +126,21 @@ class Blockchain:
             return True
 
         return False
+
+    def mine(self, sender_address, recepient_address, ammount, signature=""):
+        last_block = self.last_block
+        nonce = self.proof_of_work(last_block)
+        prev_hash = last_block.hash
+        data = {
+            "sender_address": sender_address,
+            "recepient_address": recepient_address,
+            "ammount": ammount,
+            "signature": signature,
+            "nonce": nonce
+        }
+        block = Block(index=len(self.chain) + 1, timestamp=datetime.now(), data=data, previous_hash=prev_hash)
+        block.hash = block.compute_hash()
+        if self.add_block(block):
+            self.transactions = []
+            return block.hash
+        return None

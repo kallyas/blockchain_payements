@@ -1,3 +1,106 @@
 {% include "layout.html" %}
-
+<div class="page-wrapper">
+  <div class="container-xl">
+    <div class="page-header d-print-none">
+      <div class="row align-items-center">
+        <div class="col">
+          <!-- Page pre-title -->
+          <div class="page-pretitle">Overview</div>
+          <h2 class="page-title">Your Dashboard</h2>
+        </div>
+        <!-- Page title actions -->
+        <div class="col-auto ms-auto d-print-none">
+          <div class="btn-list">
+            <span class="d-none d-sm-inline">
+              <a href="#" class="btn btn-white"> New view </a>
+            </span>
+            <a
+              href="#"
+              class="btn btn-primary d-none d-sm-inline-block"
+              data-bs-toggle="modal"
+              data-bs-target="#modal-send"
+            >
+              <i class="ti ti-plus icon"></i>
+              Send CIT Coins
+            </a>
+            <a
+              href="#"
+              class="btn btn-primary d-sm-none btn-icon"
+              data-bs-toggle="modal"
+              data-bs-target="#modal-send"
+              aria-label="Send CIT Coins"
+            >
+              <i class="ti ti-plus icon"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="container-xl">
+      <div class="row row-deck row-cards">
+        <div class="col-sm-12 col-lg-12">
+          <div class="card card-body">
+            <div class="media align-items-center">
+              <div class="media-body">
+                <h4 class="mb-0">
+                  <span class="count"> {{ total_users }} </span>
+                </h4>
+                <span class="text">
+                  Transactions to be added to the next block
+                </span>
+              </div>
+              <!-- add a button with refresh icon -->
+              <div class="media-right">
+                <button id="pending" class="btn btn-primary mt-3">
+                  Reload
+                  <i class="ti ti-refresh icon mx-2"></i>
+                </button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table
+                id="pending-transactions"
+                class="table card-table table-vcenter text-nowrap datatable"
+              ></table>
+            </div>
+            <!-- add a button in center to mine CIT Coin -->
+          </div>
+        </div>
+      </div>
+      <div class="text-center">
+        <button id="mine" class="btn btn-primary mt-3">Mine CIT coin</button>
+      </div>
+      <div class="row row-deck row-cards mt-3">
+        <div class="col-sm-12 col-lg-12">
+          <div class="card card-body">
+            <div class="media align-items-center">
+              <div class="media-body">
+                <h4 class="mb-0">
+                  <span class="count"> {{ total_users }} </span>
+                </h4>
+                <span class="text"> Transactions on the blockchain </span>
+              </div>
+              <!-- add a button with refresh icon -->
+              <div class="media-right">
+                <button id="blockchain" class="btn btn-primary mt-3">
+                  Reload
+                  <i class="ti ti-refresh icon mx-2"></i>
+                </button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table
+                id="table-blockchain"
+                class="table mt-3 card-table table-vcenter text-nowrap datatable"
+              ></table>
+            </div>
+            <!-- add a button in center to mine CIT Coin -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% include "footer.html" %}

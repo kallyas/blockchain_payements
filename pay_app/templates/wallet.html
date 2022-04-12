@@ -27,16 +27,24 @@
                     <div class="col-md-12 col-xl-12">
                       <div class="mb-3">
                         <label for="wallet address" class="form-label">
-                          Your Wallet Address
+                          Your Wallet Public Key
                         </label>
-                        {% if wallet_address %}
-                        <input type="text" class="form-control" id="wallet-address" value="{{ wallet_address }}" readonly>
-                        {% else %}
+                        <input type="text" class="form-control mb-2" id="private_key" value="" readonly>
+                        <label for="wallet address" class="form-label">
+                          Your Wallet Private Key
+                        </label>
+                        <input type="text" class="form-control mb-2" id="public_key" value="" readonly>
+                        <!-- when wallet address is generated show a warning message to save the address -->
+                        <div class="alert alert-warning" style="display: none;" role="alert">
+                          <strong>Warning!</strong>
+                          <p>
+                            Please save your wallet address to keep your funds safe.
+                          </p>
+                        </div>
                         <!-- button to generate wallet address -->
                         <button type="button" class="btn btn-primary" id="generate-wallet-address">
                           Generate Wallet Address
                         </button>
-                        {% endif %}
                       </div>
                     </div>
                   </div>

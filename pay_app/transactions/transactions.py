@@ -3,8 +3,7 @@ from typing import OrderedDict
 from Crypto.Random import get_random_bytes
 from Crypto.Hash import SHA
 from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
-
+from Crypto.Signature import PKCS1_v1_5
 
 
 class Transaction:
@@ -31,9 +30,8 @@ class Transaction:
         """
         Sign transaction with private key
         """
-        private_key = RSA.importKey(
-            binascii.unhexlify(self.sender_private_key))
-        signer = PKCS1_OAEP.new(private_key)
+        private_key = RSA.importKey(binascii.unhexlify(self.sender_private_key))
+        signer = PKCS1_v1_5.new(private_key)
         h = SHA.new(str(self.to_dict()).encode('utf8'))
         return binascii.hexlify(signer.sign(h)).decode('ascii')
 
@@ -42,6 +40,6 @@ class Transaction:
         Verify the signature of transaction
         """
         public_key = RSA.importKey(binascii.unhexlify(sender_address))
-        verifier = PKCS1_OAEP.new(public_key)
+        verifier = PKCS1_v1_5.new(public_key)
         h = SHA.new(str(data).encode('utf8'))
         return verifier.verify(h, binascii.unhexlify(signature))

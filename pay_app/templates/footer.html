@@ -9,10 +9,148 @@
     }
 
     async function generateWalletAddress() {
-        // navigate to /wallet/new
-        window.location.href = "/wallet/new";
+        let input_public = document.getElementById("public_key");
+        let input_private = document.getElementById("private_key");
+        let res = await fetch("/wallet/new", {
+            method: "POST"
+        });
+        let data = await res.json();
+        input_public.value = data.address['private_key'];
+        input_private.value = data.address['public_key'];
+        let alert = document.getElementsByClassName("alert-warning")[0];
+        // remove the display none property
+        alert.style.display = "block";
+        // disable the button using disabled class
+        document.getElementById("generate-wallet-address").classList.add("disabled");
+    }
+
+    if(window.location.pathname == "/dashboard") {
+        let btnGetTableData = document.querySelector("#pending")
+        let btnMine = document.querySelector("#mine")
+        btnGetTableData.addEventListener("click", getTableData);
+        btnMine.addEventListener("click", mine);
+        fetchBlockchainData();
+    }
+
+    if(window.location.pathname == "/send-money") {
+        // get data from the form
+        let sender_address = document.querySelector("#sender-address");
+        let sender_private_key = document.querySelector("#sender-private-key");
+        let recipient_address = document.querySelector("#recipient-address");
+        let amount = document.querySelector("#amount");
+        // get the form
+        let form = document.querySelector("#send-money");
+
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            let data = {
+                sender_address: sender_address.value,
+                sender_private_key: sender_private_key.value,
+                recipient_address: recipient_address.value,
+                amount: amount.value
+            }
+            let res = await sendMoney(data);
+            if(res.status == 201) {
+                await makeTransaction(res)
+            }
+
+        });
+    }
+
+    async function makeTransaction(data) {
+        let res = await fetch("/transactions/new", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+    }
+
+
+    async function sendMoney(data) {
+        let res = await fetch("/generate/transaction", {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        let res_data = await res.json();
+        return res_data;
+    }
+
+    async function fetchBlockchainData() {
+        let res = await fetch("/chain");
+        let data = await res.json();
+        let table = document.getElementById("table-blockchain");
+        let innerHTML = `
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Recepient Address</th>
+                        <th>Sender Address</th>
+                        <th>value</th>
+                        <th>Timestamp</th>
+                        <th>Block</th>
+                    </tr>
+                </thead>
+        `;
+        data.chain.forEach(block => {
+            innerHTML += `
+                <tbody>
+                <tr>
+                    <td>${block.index + 1}</td>
+                    <td>${block.data.recepient_address ? block.data.recepient_address : 0}</td>
+                    <td>${block.data.sender_address ? block.data.sender_address : 0}</td>
+                    <td>${block.data.ammount ? block.data.ammount : 0}</td>
+                    <td>${new Date(block.timestamp).toDateString()}</td>
+                    <td>${block.index + 1}</td>
+                </tr>
+                </tbody>
+            `;
+        });
+        table.innerHTML = innerHTML;
+    }
+
+    async function getTableData() {
+        let res = await fetch('/transactions/get')
+        let data = await res.json()
+        let table = document.querySelector("#pending-transactions")
+        table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Recepient Address</th>
+                        <th>Sender Address</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                `
+        data.forEach(element => {
+            let html = `
+            <tbody>
+                <tr>
+                    <td>${element.id}</td>
+                    <td>${element.recepient_address}</td>
+                    <td>${element.sender_address}</td>
+                    <td>${element.value}</td>
+                </tr>
+            </tbody>
+            `
+            table.innerHTML += html
+        })
+
+    }
+
+    async function mine() {
+        let res = await fetch('/mine')
+        let data = await res.json()
+        console.log(data)
+        fetchBlockchainData()
     }
 </script>
+<script src="{{ url_for('static', filename='libs/bootstrap/dist/js/bootstrap.bundle.min.js')}}" async defer></script>
 <script src="{{ url_for('static', filename='js/tabler.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/app.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tabler.js') }}"></script>
