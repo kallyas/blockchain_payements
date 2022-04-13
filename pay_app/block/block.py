@@ -3,12 +3,12 @@ import json
 
 
 class Block:
-    def __init__(self, index, data, timestamp, previous_hash):
+    def __init__(self, index, data, timestamp, nonce, previous_hash):
         self.index = index
         self.data = data
         self.timestamp = str(timestamp)
         self.previous_hash = previous_hash
-        self.nonce = 0
+        self.nonce = nonce
 
     def compute_hash(self):
         """

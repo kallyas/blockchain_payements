@@ -121,14 +121,17 @@ def get_transactions():
 @app.route("/mine")
 @login_required
 def mine():
-    data = blockchain.mine(SENDER_ADDR, blockchain.node_id, MINING_REWARD)
-    return { 'block': data }
+    last_block = blockchain.last_block
+    nonce = blockchain.proof_of_work()
+    blockchain.mine(SENDER_ADDR, blockchain.node_id, MINING_REWARD)
+    prev_hash = last_block['hash']
+    block = blockchain.add_block(prev_hash, nonce)
+    return block, 200
 
 @app.route("/chain")
 @login_required
 def get_chain():
-    chain_dict = [chain.to_dict() for chain in blockchain.chain]
-    return {'chain': chain_dict, 'length': len(chain_dict)}
+    return {'chain': blockchain.chain, 'length': len(blockchain.chain)}
 
 @app.route("/nodes/register")
 @login_required
@@ -167,21 +170,11 @@ def new_transaction():
     transaction_keys = ['sender_address', 'recipient_address', 'amount', 'signature']
     if not all(key in data for key in transaction_keys):
         return 'Some elements of the transaction are missing', 400
-    block_data = {
-        'sender_address': data['sender_address'],
-        'recipient_address': data['recipient_address'],
-        'amount': data['amount'],
-        'signature': data['signature'],
-        'nonce': blockchain.proof_of_work(blockchain.last_block)
-    }
-    block = Block(len(blockchain.chain), block_data, datetime.now(), blockchain.last_block.hash)
-    blockchain_response = blockchain.add_block(block)
-    if blockchain_response:
-        response = {'message': 'Block added to the chain', 'block': block.to_dict(), 'chain': blockchain.chain}
-        return jsonify(response), 201
-    else:
-        response = {'message': 'Block not added to the chain', 'chain': blockchain.chain}
-        return jsonify(response), 409
+
+    transaction_result = blockchain.mine(data['sender_address'], data['recipient_address'], data['amount'], data['signature'])
+    if transaction_result == False:
+        return { 'error': 'Invalid transaction'}, 406
+    return {'message': 'Transaction will be added to Block '+ str(transaction_result)}, 201  
 
 
 if __name__ == '__main__':

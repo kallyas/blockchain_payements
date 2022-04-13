@@ -1,6 +1,29 @@
 
 <!-- load js from static files -->
 </div>
+<div class="modal modal-blur fade" id="modal-success" tabindex="-1" role="dialog" aria-modal="true" style="display: none; padding-left: 0px;">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-status bg-success"></div>
+        <div class="modal-body text-center py-4">
+          <i class="ti ti-circle-check icon mb-2 text-green icon-lg" style="font-size: 5rem;"></i>
+          <h3>Payment succedeed</h3>
+          <div id="pay-message" class="text-muted"></div>
+        </div>
+        <div class="modal-footer">
+          <div class="w-100">
+            <div class="row">
+              <div class="col"><a href="#" class="btn w-100" data-bs-dismiss="modal">
+                  Close
+                </a>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 <script>
     if (window.location.pathname == "/wallet") {
        let btnGenerateWalletAddress = document.getElementById("generate-wallet-address");
@@ -41,6 +64,10 @@
         // get the form
         let form = document.querySelector("#send-money");
 
+        // get success modal
+        let successModal = document.querySelector('#modal-success')
+
+
         form.addEventListener("submit", async function(e) {
             e.preventDefault();
             let data = {
@@ -49,15 +76,27 @@
                 recipient_address: recipient_address.value,
                 amount: amount.value
             }
-            let res = await sendMoney(data);
-            if(res.status == 201) {
-                await makeTransaction(res)
+            let { res, status} = await sendMoney(data);
+            if(status == 201) {
+                let newData = {
+                    signature: res.signature,
+                    sender_address: res.transaction.sender_address,
+                    recipient_address: res.transaction.recipient_address,
+                    amount: res.transaction.amount
+                }
+                await makeTransaction(newData, successModal)
             }
 
         });
+
+        successModal.addEventListener('click', () => {
+        form.reset()
+        successModal.classList.remove('show')
+        successModal.style.display = 'none'
+    })
     }
 
-    async function makeTransaction(data) {
+    async function makeTransaction(data, successModal) {
         let res = await fetch("/transactions/new", {
             method: "POST",
             headers: {
@@ -65,6 +104,10 @@
             },
             body: JSON.stringify(data)
         });
+
+        document.getElementById('pay-message').innerHTML = `Your payement of ${data.amount} has been successfully made`
+        successModal.classList.add('show')
+        successModal.style.display = 'block'
     }
 
 
@@ -77,12 +120,14 @@
             }
         });
         let res_data = await res.json();
-        return res_data;
+        return { res: res_data, status: res.status}
     }
 
     async function fetchBlockchainData() {
         let res = await fetch("/chain");
-        let data = await res.json();
+        let res_data = await res.json();
+        let { chain } = res_data
+        res_data.chain.forEach(chain => console.log(chain.data[0]?.nonce))
         let table = document.getElementById("table-blockchain");
         let innerHTML = `
                 <thead>
@@ -96,14 +141,14 @@
                     </tr>
                 </thead>
         `;
-        data.chain.forEach(block => {
+        chain.forEach(block => {
             innerHTML += `
                 <tbody>
                 <tr>
                     <td>${block.index + 1}</td>
-                    <td>${block.data.recepient_address ? block.data.recepient_address : 0}</td>
-                    <td>${block.data.sender_address ? block.data.sender_address : 0}</td>
-                    <td>${block.data.ammount ? block.data.ammount : 0}</td>
+                    <td>${block.data[0]?.recipient_address ? block.data[0]?.recipient_address : 0}</td>
+                    <td>${block.data[0]?.sender_address ? block.data[0]?.sender_address : 0}</td>
+                    <td>${block.data[0]?.ammount ? block.data[0]?.ammount : 0}</td>
                     <td>${new Date(block.timestamp).toDateString()}</td>
                     <td>${block.index + 1}</td>
                 </tr>
@@ -111,11 +156,13 @@
             `;
         });
         table.innerHTML = innerHTML;
+        await getTableData()
     }
 
     async function getTableData() {
         let res = await fetch('/transactions/get')
-        let data = await res.json()
+        let { transactions } = await res.json()
+
         let table = document.querySelector("#pending-transactions")
         table.innerHTML = `
                 <thead>
@@ -127,14 +174,14 @@
                     </tr>
                 </thead>
                 `
-        data.forEach(element => {
+        transactions.forEach(element => {
             let html = `
             <tbody>
                 <tr>
-                    <td>${element.id}</td>
-                    <td>${element.recepient_address}</td>
-                    <td>${element.sender_address}</td>
-                    <td>${element.value}</td>
+                    <td>${element?.nonce}</td>
+                    <td>${element?.recipient_address}</td>
+                    <td>${element?.sender_address}</td>
+                    <td>${element?.nonce}</td>
                 </tr>
             </tbody>
             `
@@ -149,6 +196,8 @@
         console.log(data)
         fetchBlockchainData()
     }
+
+
 </script>
 <script src="{{ url_for('static', filename='libs/bootstrap/dist/js/bootstrap.bundle.min.js')}}" async defer></script>
 <script src="{{ url_for('static', filename='js/tabler.min.js') }}"></script>

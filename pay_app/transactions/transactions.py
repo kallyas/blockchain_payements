@@ -35,11 +35,3 @@ class Transaction:
         h = SHA.new(str(self.to_dict()).encode('utf8'))
         return binascii.hexlify(signer.sign(h)).decode('ascii')
 
-    def verify_transaction_signature(self, sender_address, signature, data):
-        """
-        Verify the signature of transaction
-        """
-        public_key = RSA.importKey(binascii.unhexlify(sender_address))
-        verifier = PKCS1_v1_5.new(public_key)
-        h = SHA.new(str(data).encode('utf8'))
-        return verifier.verify(h, binascii.unhexlify(signature))
